@@ -7,6 +7,8 @@ const NgoProfile = () => {
   const { name, email } = location.state || {};
 
   const [selectedAreas, setSelectedAreas] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [fileName, setFileName] = useState("");
 
   const [formData, setFormData] = useState({
     ngoName: name || "",
@@ -52,9 +54,80 @@ const NgoProfile = () => {
     });
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const allowedTypes = [
+      "application/pdf",
+      "image/png",
+      "image/jpeg",
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      setErrors((prev) => ({
+        ...prev,
+        file: "Only PDF, PNG or JPG allowed",
+      }));
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setErrors((prev) => ({
+        ...prev,
+        file: "File must be under 10MB",
+      }));
+      return;
+    }
+
+    setErrors((prev) => ({ ...prev, file: "" }));
+    setFileName(file.name);
+  };
+
+  const validate = () => {
+    let newErrors = {};
+
+    if (!formData.registration)
+      newErrors.registration = "Registration number required";
+
+    if (!formData.phone)
+      newErrors.phone = "Phone number required";
+    else if (!/^[0-9]{10}$/.test(formData.phone))
+      newErrors.phone = "Must be 10 digits";
+
+    if (!formData.city) newErrors.city = "City required";
+    if (!formData.state) newErrors.state = "State required";
+
+    if (!formData.established)
+      newErrors.established = "Year required";
+    else if (
+      isNaN(formData.established) ||
+      formData.established.length !== 4
+    )
+      newErrors.established = "Enter valid 4-digit year";
+
+    if (formData.website && !formData.website.startsWith("http"))
+      newErrors.website = "Enter valid website URL";
+
+    if (selectedAreas.length === 0)
+      newErrors.focus = "Select at least one focus area";
+
+    if (!formData.mission || formData.mission.length < 50)
+      newErrors.mission = "Minimum 50 characters required";
+
+    if (!formData.vision || formData.vision.length < 50)
+      newErrors.vision = "Minimum 50 characters required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ ...formData, focusAreas: selectedAreas });
+    if (validate()) {
+      alert("NGO Profile Submitted Successfully 🎉");
+      console.log({ ...formData, focusAreas: selectedAreas });
+    }
   };
 
   return (
@@ -66,43 +139,72 @@ const NgoProfile = () => {
 
         <form onSubmit={handleSubmit}>
 
-          {/* Basic Info */}
+          
           <div className="section-card">
             <h3>Basic Information</h3>
+
             <div className="row">
               <input type="text" value={formData.ngoName} readOnly />
-              <input
-                type="text"
-                name="registration"
-                placeholder="Registration Number"
-                onChange={handleChange}
-              />
+              <div className="input-group">
+                <input
+                  name="registration"
+                  placeholder="Registration Number"
+                  onChange={handleChange}
+                />
+                {errors.registration && <p className="error">{errors.registration}</p>}
+              </div>
             </div>
+
             <div className="row">
               <input type="email" value={formData.officialEmail} readOnly />
-              <input
-                type="text"
-                name="phone"
-                placeholder="Contact Phone"
-                onChange={handleChange}
-              />
+              <div className="input-group">
+                <input
+                  name="phone"
+                  placeholder="Contact Phone"
+                  onChange={handleChange}
+                />
+                {errors.phone && <p className="error">{errors.phone}</p>}
+              </div>
             </div>
           </div>
 
           
           <div className="section-card">
             <h3>Location & Establishment</h3>
+
             <div className="row">
-              <input name="city" placeholder="City" onChange={handleChange} />
-              <input name="state" placeholder="State" onChange={handleChange} />
+              <div className="input-group">
+                <input name="city" placeholder="City" onChange={handleChange} />
+                {errors.city && <p className="error">{errors.city}</p>}
+              </div>
+
+              <div className="input-group">
+                <input name="state" placeholder="State" onChange={handleChange} />
+                {errors.state && <p className="error">{errors.state}</p>}
+              </div>
             </div>
+
             <div className="row">
-              <input name="established" placeholder="Year Established" onChange={handleChange} />
-              <input name="website" placeholder="Website URL" onChange={handleChange} />
+              <div className="input-group">
+                <input
+                  name="established"
+                  placeholder="Year Established"
+                  onChange={handleChange}
+                />
+                {errors.established && <p className="error">{errors.established}</p>}
+              </div>
+
+              <div className="input-group">
+                <input
+                  name="website"
+                  placeholder="Website URL"
+                  onChange={handleChange}
+                />
+                {errors.website && <p className="error">{errors.website}</p>}
+              </div>
             </div>
           </div>
 
-          
           <div className="section-card">
             <h3>Focus Areas</h3>
             <div className="focus-areas">
@@ -116,71 +218,50 @@ const NgoProfile = () => {
                 </div>
               ))}
             </div>
+            {errors.focus && <p className="error">{errors.focus}</p>}
           </div>
 
-         
+        
           <div className="section-card">
             <h3>Mission & Vision</h3>
+
             <div className="mission-vision">
               <div className="mv-box">
                 <h4>Our Mission</h4>
                 <textarea
                   name="mission"
-                  placeholder="What problem are you solving?"
                   onChange={handleChange}
                 />
+                {errors.mission && <p className="error">{errors.mission}</p>}
               </div>
+
               <div className="mv-box vision">
                 <h4>Our Vision</h4>
                 <textarea
                   name="vision"
-                  placeholder="What future impact do you aim to create?"
                   onChange={handleChange}
                 />
+                {errors.vision && <p className="error">{errors.vision}</p>}
               </div>
             </div>
           </div>
 
-          
-          <div className="section-card">
-            <h3>Organization Details</h3>
-            <div className="row">
-              <input name="projects" placeholder="Active Projects" onChange={handleChange} />
-              <input name="teamSize" placeholder="Team Size" onChange={handleChange} />
-            </div>
-            <div className="row">
-              <input name="beneficiaries" placeholder="Target Beneficiaries" onChange={handleChange} />
-              <input name="skillsRequired" placeholder="Volunteer Skills Required" onChange={handleChange} />
-            </div>
-          </div>
-
-          
-          <div className="section-card">
-            <h3>Social Media Links</h3>
-            <div className="row">
-              <input name="facebook" placeholder="Facebook URL" onChange={handleChange} />
-              <input name="instagram" placeholder="Instagram URL" onChange={handleChange} />
-            </div>
-            <div className="row">
-              <input name="linkedin" placeholder="LinkedIn URL" onChange={handleChange} />
-              <input name="twitter" placeholder="Twitter URL" onChange={handleChange} />
-            </div>
-          </div>
-
-          
           <div className="section-card">
             <h3>Verification Documents</h3>
             <label className="upload-box">
-              <input type="file" hidden />
+              <input type="file" hidden onChange={handleFileChange} />
               <div>
                 📄
-                <span>Upload Registration Certificate</span>
+                <span>{fileName ? fileName : "Upload Registration Certificate"}</span>
                 <p>PDF, PNG, JPG (Max 10MB)</p>
               </div>
             </label>
+            {errors.file && <p className="error">{errors.file}</p>}
           </div>
 
-          <button className="submit-btn">Submit NGO Profile</button>
+          <button className="submit-btn">
+            Submit NGO Profile
+          </button>
 
         </form>
       </div>
