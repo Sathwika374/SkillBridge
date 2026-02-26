@@ -1,69 +1,128 @@
+
 .register-container {
-  width: 100%;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(-45deg, #0b1120, #111827, #0f172a, #1e293b);
-  color: white;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  font-family: "Segoe UI", sans-serif;
 }
 
 .card {
-  width: 400px;
-  padding: 40px;
+  width: 480px;            
+  padding: 28px 35px;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
   text-align: center;
-}
-
-.card input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: none;
-  background: rgba(255, 255, 255, 0.1);
   color: white;
 }
 
-.card button {
+.card h2 {
+  margin-bottom: 16px;       
+  font-size: 22px;
+  font-weight: 600;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;                 
+}
+
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+
+input {
   width: 100%;
-  padding: 12px;
+  padding: 8px 14px;         
+  border-radius: 12px;
   border: none;
-  border-radius: 50px;
-  background: linear-gradient(90deg, #10b981, #3b82f6);
+  background: #2c3446;
   color: white;
-  cursor: pointer;
+  font-size: 13px;
+  transition: 0.3s ease;
+}
+
+input::placeholder {
+  color: #aaa;
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid #3498db;
+}
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #2c3446 inset !important;
+  -webkit-text-fill-color: white !important;
+}
+
+
+.error {
+  font-size: 11px;
+  margin-top: 3px;
+  color: #ff4d4d;
+}
+
+.input-error {
+  border: 1px solid #ff4d4d;
 }
 
 
 .role-section {
-  margin-bottom: 20px;
+  margin-top: 4px;           
 }
 
 .role-section p {
-  margin-bottom: 8px;
-  font-size: 14px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #ccc;
 }
 
 .role-options {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
 }
 
 .role-card {
-  width: 48%;
-  padding: 10px;
-  border-radius: 10px;
-  text-align: center;
+  flex: 1;
+  padding: 8px;
+  border-radius: 20px;
+  background: #2c3446;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.1);
-  transition: 0.3s;
-  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 13px;
+  transition: 0.3s ease;
 }
 
 .role-card.active {
-  background: linear-gradient(90deg, #10b981, #3b82f6);
-  color: white;
+  background: linear-gradient(90deg, #1abc9c, #3498db);
+}
+
+
+.register-btn {
+  margin-top: 8px;
+  padding: 14px;             
+  border-radius: 28px;
   border: none;
+  font-size: 15px;
+  font-weight: 600;
+  background: linear-gradient(90deg, #1abc9c, #3498db);
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.register-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(52, 152, 219, 0.5);
 }
